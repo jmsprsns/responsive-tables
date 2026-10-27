@@ -3,7 +3,7 @@
  * Plugin Name:       Responsive Tables
  * Plugin URI:        https://www.contentpowered.com
  * Description:       Tables that stay readable on phones. Rows turn into cards, collapse to tap-to-open rows, or scroll with a frozen first column. Spreadsheet-style editing, sorting, search, pagination and one-click TablePress import.
- * Version:           1.0.0
+ * Version:           1.0.1
  * Requires at least: 5.8
  * Requires PHP:      7.2
  * Author:            Content Powered

@@ -98,6 +98,11 @@ Settings and saved tables are deleted. Tables built inside posts stay in those p
 
 == Changelog ==
 
+= 1.0.1 =
+
+* Scroll layout: the frozen first column stays solid when a row is hovered, striped or highlighted, so columns scrolling under it no longer show through.
+* Clearer sort arrows in column headers.
+
 = 1.0.0 =
 
 * First release.

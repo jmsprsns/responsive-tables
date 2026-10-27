@@ -369,22 +369,25 @@
 	border-radius: var(--rtbl-radius);
 }
 
+/* The frozen cells keep a solid base colour (!important beats the hover,
+   stripe and highlight tints, which would let the columns scrolling under
+   them show through) and take those tints as a layer on top instead. */
 .rtbl--scroll .rtbl-table > * > tr > :first-child {
 	position: sticky;
 	inset-inline-start: 0;
-	z-index: 1;
-	background-color: var(--rtbl-surface);
+	z-index: 2;
+	background-color: var(--rtbl-surface) !important;
 	box-shadow: 1px 0 0 var(--rtbl-line);
 }
 
 .rtbl--scroll.rtbl--head-light .rtbl-table > thead > tr > :first-child,
 .rtbl--scroll .rtbl-table > tbody > tr.is-hl > :first-child,
-.rtbl--scroll .rtbl-table > tbody > tr > .is-hl:first-child {
+.rtbl--scroll .rtbl-table > * > tr > .is-hl:first-child {
 	background-image: linear-gradient(var(--rtbl-soft), var(--rtbl-soft));
 }
 
 .rtbl--scroll.rtbl--head-solid .rtbl-table > thead > tr > :first-child {
-	background-color: var(--rtbl-accent);
+	background-color: var(--rtbl-accent) !important;
 }
 
 .rtbl--scroll.rtbl--striped .rtbl-table > tbody > tr:nth-child(even) > :first-child {
@@ -482,31 +485,42 @@
 }
 
 .rtbl .rtbl-sort-ico {
+	position: relative;
 	display: inline-block;
 	flex: none;
-	width: .55em;
-	height: .8em;
-	background:
-		linear-gradient(to top right, transparent 50%, currentColor 50%) 0 0 / 50% 40% no-repeat,
-		linear-gradient(to top left, transparent 50%, currentColor 50%) 100% 0 / 50% 40% no-repeat,
-		linear-gradient(to bottom right, transparent 50%, currentColor 50%) 0 100% / 50% 40% no-repeat,
-		linear-gradient(to bottom left, transparent 50%, currentColor 50%) 100% 100% / 50% 40% no-repeat;
-	opacity: .35;
+	width: .6em;
+	height: .85em;
+	opacity: .4;
 }
 
-.rtbl .rtbl-table th[aria-sort="ascending"] .rtbl-sort-ico {
-	background:
-		linear-gradient(to top right, transparent 50%, currentColor 50%) 0 25% / 50% 45% no-repeat,
-		linear-gradient(to top left, transparent 50%, currentColor 50%) 100% 25% / 50% 45% no-repeat;
-	opacity: 1;
+.rtbl .rtbl-sort-ico::before,
+.rtbl .rtbl-sort-ico::after {
+	content: "";
+	position: absolute;
+	left: 0;
+	width: 100%;
+	height: 40%;
+	background: currentColor;
 }
 
-.rtbl .rtbl-table th[aria-sort="descending"] .rtbl-sort-ico {
-	background:
-		linear-gradient(to bottom right, transparent 50%, currentColor 50%) 0 75% / 50% 45% no-repeat,
-		linear-gradient(to bottom left, transparent 50%, currentColor 50%) 100% 75% / 50% 45% no-repeat;
-	opacity: 1;
+/* Up arrow on top, down arrow below; a sorted column keeps just one. */
+.rtbl .rtbl-sort-ico::before {
+	top: 0;
+	-webkit-clip-path: polygon(50% 0, 100% 100%, 0 100%);
+	clip-path: polygon(50% 0, 100% 100%, 0 100%);
 }
+
+.rtbl .rtbl-sort-ico::after {
+	bottom: 0;
+	-webkit-clip-path: polygon(0 0, 100% 0, 50% 100%);
+	clip-path: polygon(0 0, 100% 0, 50% 100%);
+}
+
+.rtbl .rtbl-table th[aria-sort] .rtbl-sort-ico { opacity: 1; }
+.rtbl .rtbl-table th[aria-sort="ascending"] .rtbl-sort-ico::after,
+.rtbl .rtbl-table th[aria-sort="descending"] .rtbl-sort-ico::before { display: none; }
+.rtbl .rtbl-table th[aria-sort="ascending"] .rtbl-sort-ico::before { top: 30%; }
+.rtbl .rtbl-table th[aria-sort="descending"] .rtbl-sort-ico::after { bottom: 30%; }
 
 /* Search and "Sort by" ------------------------------------------------------ */
 
