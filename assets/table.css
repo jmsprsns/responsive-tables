@@ -1,0 +1,709 @@
+/**
+ * Responsive Tables: front-end styles.
+ *
+ * This file holds the desktop look and the pieces every layout shares. The
+ * phone layouts (cards for stack and collapse) are printed per breakpoint
+ * by Responsive_Tables_Render::breakpoint_css(), inside a container query
+ * on .rtbl, so each table switches by the space it actually has.
+ *
+ * Restyle tables from your theme with these custom properties on .rtbl:
+ *   --rtbl-accent     Header, badges, buttons, highlights (set per table)
+ *   --rtbl-surface    Background behind the frozen first column (default #fff)
+ *   --rtbl-card       Background of the cards on phones (default transparent)
+ *   --rtbl-line       Border colour
+ *   --rtbl-radius     Corner radius
+ */
+
+.rtbl {
+	--rtbl-accent: #2563eb;
+	--rtbl-on-accent: #fff;
+	--rtbl-surface: #fff;
+	--rtbl-card: transparent;
+	--rtbl-line: rgba(0, 0, 0, .12);
+	--rtbl-soft: rgba(37, 99, 235, .08);
+	--rtbl-tint: rgba(37, 99, 235, .16);
+	--rtbl-accent-deep: var(--rtbl-accent);
+	--rtbl-stripe: rgba(0, 0, 0, .03);
+	--rtbl-hover: rgba(0, 0, 0, .035);
+	--rtbl-radius: 10px;
+	--rtbl-yes: #2f9e44;
+	--rtbl-no: #e03131;
+	--rtbl-star: #f59f00;
+	--rtbl-star-off: rgba(0, 0, 0, .14);
+
+	container: rtbl / inline-size;
+	box-sizing: border-box;
+	width: 100%;
+	max-width: 100%;
+	margin-block: 0 1.75em;
+	line-height: 1.5;
+}
+
+@supports (color: color-mix(in srgb, red 50%, blue)) {
+	.rtbl {
+		--rtbl-line: color-mix(in srgb, currentColor 14%, transparent);
+		--rtbl-soft: color-mix(in srgb, var(--rtbl-accent) 8%, transparent);
+		--rtbl-tint: color-mix(in srgb, var(--rtbl-accent) 15%, transparent);
+		--rtbl-accent-deep: color-mix(in srgb, var(--rtbl-accent) 80%, #000);
+		--rtbl-stripe: color-mix(in srgb, currentColor 3.5%, transparent);
+		--rtbl-hover: color-mix(in srgb, currentColor 4%, transparent);
+		--rtbl-star-off: color-mix(in srgb, currentColor 16%, transparent);
+	}
+}
+
+.rtbl *,
+.rtbl *::before,
+.rtbl *::after {
+	box-sizing: border-box;
+}
+
+.rtbl.alignwide,
+.rtbl.alignfull {
+	max-width: none;
+}
+
+/* Table --------------------------------------------------------------------- */
+
+.rtbl .rtbl-scroll {
+	max-width: 100%;
+	overflow-x: auto;
+	-webkit-overflow-scrolling: touch;
+}
+
+.rtbl .rtbl-table {
+	width: 100%;
+	max-width: none;
+	margin: 0;
+	border: 1px solid var(--rtbl-line);
+	border-collapse: separate;
+	border-spacing: 0;
+	border-radius: var(--rtbl-radius);
+	background: transparent;
+	font-size: inherit;
+	line-height: inherit;
+	table-layout: auto;
+}
+
+.rtbl .rtbl-table > caption {
+	margin: 0;
+	padding: 0 0 .6em;
+	caption-side: top;
+	font-weight: 700;
+	text-align: start;
+}
+
+.rtbl .rtbl-table th,
+.rtbl .rtbl-table td {
+	padding: .75em 1em;
+	border: 0;
+	border-top: 1px solid var(--rtbl-line);
+	background: none;
+	color: inherit;
+	font-size: inherit;
+	text-align: start;
+	vertical-align: middle;
+	overflow-wrap: break-word;
+	word-break: normal;
+}
+
+.rtbl .rtbl-table td {
+	font-weight: inherit;
+}
+
+.rtbl .rtbl-table > :first-child > tr:first-child > *,
+.rtbl .rtbl-table > caption + * > tr:first-child > * {
+	border-top: 0;
+}
+
+.rtbl .rtbl-table th[scope="row"] {
+	font-weight: 700;
+}
+
+/* Rounded corners without clipping (overflow would cut the frozen column's shadow). */
+.rtbl .rtbl-table > :is(thead, tbody):first-of-type > tr:first-child > :first-child { border-start-start-radius: calc(var(--rtbl-radius) - 1px); }
+.rtbl .rtbl-table > :is(thead, tbody):first-of-type > tr:first-child > :last-child { border-start-end-radius: calc(var(--rtbl-radius) - 1px); }
+.rtbl .rtbl-table > :last-child > tr:last-child > :first-child { border-end-start-radius: calc(var(--rtbl-radius) - 1px); }
+.rtbl .rtbl-table > :last-child > tr:last-child > :last-child { border-end-end-radius: calc(var(--rtbl-radius) - 1px); }
+
+.rtbl .rtbl-value > :first-child { margin-top: 0; }
+.rtbl .rtbl-value > :last-child { margin-bottom: 0; }
+
+.rtbl .rtbl-table img {
+	max-width: 100%;
+	height: auto;
+	vertical-align: middle;
+}
+
+.rtbl .rtbl-table .rtbl-img {
+	display: inline-block;
+	max-height: 7em;
+	width: auto;
+	border-radius: 6px;
+}
+
+.rtbl .rtbl-al-center { text-align: center; }
+.rtbl .rtbl-al-right { text-align: end; }
+
+/* Labels beside values: only in the phone layouts. */
+.rtbl .rtbl-label {
+	display: none;
+	font-size: .92em;
+	font-weight: 600;
+	opacity: .75;
+}
+
+/* Header styles ------------------------------------------------------------- */
+
+.rtbl .rtbl-table > thead th {
+	font-weight: 700;
+	vertical-align: bottom;
+}
+
+.rtbl--head-light .rtbl-table > thead th {
+	background: var(--rtbl-soft);
+}
+
+.rtbl--head-solid .rtbl-table > thead th {
+	background: var(--rtbl-accent);
+	color: var(--rtbl-on-accent);
+}
+
+.rtbl--head-plain .rtbl-table > thead th {
+	border-bottom: 2px solid var(--rtbl-line);
+}
+
+.rtbl--head-plain .rtbl-table > thead + tbody > tr:first-child > * {
+	border-top: 0;
+}
+
+.rtbl .rtbl-table > tfoot > tr > * {
+	border-top-width: 2px;
+	font-weight: 700;
+}
+
+/* Table styles -------------------------------------------------------------- */
+
+.rtbl--striped .rtbl-table > tbody > tr:nth-child(even) > * {
+	background-color: var(--rtbl-stripe);
+}
+
+.rtbl--bordered .rtbl-table th + th,
+.rtbl--bordered .rtbl-table th + td,
+.rtbl--bordered .rtbl-table td + td,
+.rtbl--bordered .rtbl-table td + th {
+	border-inline-start: 1px solid var(--rtbl-line);
+}
+
+.rtbl--minimal .rtbl-table {
+	border-width: 0;
+	border-radius: 0;
+}
+
+.rtbl--minimal .rtbl-table th,
+.rtbl--minimal .rtbl-table td {
+	padding-inline: .6em;
+	border-radius: 0 !important;
+}
+
+.rtbl--minimal .rtbl-table > tbody > tr:last-child > * {
+	border-bottom: 1px solid var(--rtbl-line);
+}
+
+.rtbl .rtbl-table > tbody > tr:hover > * {
+	background-color: var(--rtbl-hover);
+}
+
+/* Highlights ---------------------------------------------------------------- */
+
+.rtbl .rtbl-table .is-hl {
+	background-color: var(--rtbl-soft);
+}
+
+.rtbl--head-light .rtbl-table > thead th.is-hl {
+	background: var(--rtbl-tint);
+}
+
+.rtbl--head-solid .rtbl-table > thead th.is-hl {
+	background: var(--rtbl-accent-deep);
+	color: var(--rtbl-on-accent);
+}
+
+.rtbl .rtbl-table td.is-hl,
+.rtbl .rtbl-table th.is-hl {
+	box-shadow: inset 2px 0 0 var(--rtbl-accent), inset -2px 0 0 var(--rtbl-accent);
+}
+
+.rtbl .rtbl-table > thead th.is-hl {
+	box-shadow: inset 2px 0 0 var(--rtbl-accent), inset -2px 0 0 var(--rtbl-accent), inset 0 3px 0 var(--rtbl-accent);
+}
+
+.rtbl .rtbl-table > tbody > tr.is-hl > * {
+	background-color: var(--rtbl-soft);
+}
+
+.rtbl .rtbl-table > tbody > tr.is-hl > :first-child {
+	box-shadow: inset 3px 0 0 var(--rtbl-accent);
+}
+
+.rtbl .rtbl-badge {
+	display: inline-block;
+	margin: 0 0 .4em;
+	padding: .2em .65em;
+	border-radius: 999px;
+	background: var(--rtbl-accent);
+	color: var(--rtbl-on-accent);
+	font-size: .72em;
+	font-weight: 700;
+	letter-spacing: .04em;
+	line-height: 1.35;
+	text-transform: uppercase;
+	white-space: nowrap;
+	vertical-align: middle;
+}
+
+.rtbl .rtbl-table > thead .rtbl-badge,
+.rtbl .rtbl-table > tbody > tr > :first-child > .rtbl-badge {
+	display: table;
+}
+
+/* Cell shortcuts ------------------------------------------------------------ */
+
+.rtbl .rtbl-mark {
+	display: inline-flex;
+	align-items: center;
+	gap: .45em;
+	vertical-align: middle;
+}
+
+.rtbl .rtbl-mark-icon {
+	flex: none;
+	width: 1.5em;
+	height: 1.5em;
+	padding: .28em;
+	border-radius: 50%;
+	color: var(--rtbl-yes);
+	background: rgba(47, 158, 68, .13);
+}
+
+.rtbl .rtbl-no .rtbl-mark-icon {
+	color: var(--rtbl-no);
+	background: rgba(224, 49, 49, .11);
+}
+
+.rtbl .rtbl-stars {
+	display: inline-flex;
+	align-items: center;
+	gap: .45em;
+	white-space: nowrap;
+	vertical-align: middle;
+}
+
+.rtbl .rtbl-stars-bar {
+	display: inline-block;
+	width: 5em;
+	height: 1em;
+	background: linear-gradient(90deg, var(--rtbl-star) var(--rtbl-p, 0%), var(--rtbl-star-off) var(--rtbl-p, 0%));
+	-webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 1.8l3.1 6.6 7.2.9-5.3 5 1.4 7.1L12 17.9l-6.4 3.5L7 14.3 1.7 9.3l7.2-.9z'/%3E%3C/svg%3E") 0 50% / 1em 1em repeat-x;
+	mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 1.8l3.1 6.6 7.2.9-5.3 5 1.4 7.1L12 17.9l-6.4 3.5L7 14.3 1.7 9.3l7.2-.9z'/%3E%3C/svg%3E") 0 50% / 1em 1em repeat-x;
+}
+
+.rtbl .rtbl-stars-num {
+	font-size: .9em;
+	font-weight: 700;
+	font-variant-numeric: tabular-nums;
+}
+
+.rtbl a.rtbl-button,
+.rtbl .rtbl-button {
+	display: inline-block;
+	padding: .55em 1.1em;
+	border: 0;
+	border-radius: 6px;
+	background: var(--rtbl-accent);
+	box-shadow: none;
+	color: var(--rtbl-on-accent);
+	font-size: .95em;
+	font-weight: 700;
+	line-height: 1.25;
+	text-align: center;
+	text-decoration: none;
+	white-space: nowrap;
+	transition: filter .15s;
+}
+
+.rtbl a.rtbl-button:hover,
+.rtbl a.rtbl-button:focus {
+	color: var(--rtbl-on-accent);
+	text-decoration: none;
+	filter: brightness(.9);
+}
+
+.rtbl a.rtbl-button:focus-visible {
+	outline: 2px solid var(--rtbl-accent);
+	outline-offset: 2px;
+}
+
+.rtbl .rtbl-button.is-disabled {
+	opacity: .6;
+}
+
+/* Screen-reader-only text. */
+.rtbl .rtbl-sr {
+	position: absolute !important;
+	width: 1px;
+	height: 1px;
+	margin: -1px;
+	padding: 0;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	clip-path: inset(50%);
+	white-space: nowrap;
+	border: 0;
+}
+
+/* Scroll mode: frozen first column ------------------------------------------ */
+
+.rtbl--scroll .rtbl-scroll:focus-visible {
+	outline: 2px solid var(--rtbl-accent);
+	outline-offset: 2px;
+	border-radius: var(--rtbl-radius);
+}
+
+.rtbl--scroll .rtbl-table > * > tr > :first-child {
+	position: sticky;
+	inset-inline-start: 0;
+	z-index: 1;
+	background-color: var(--rtbl-surface);
+	box-shadow: 1px 0 0 var(--rtbl-line);
+}
+
+.rtbl--scroll.rtbl--head-light .rtbl-table > thead > tr > :first-child,
+.rtbl--scroll .rtbl-table > tbody > tr.is-hl > :first-child,
+.rtbl--scroll .rtbl-table > tbody > tr > .is-hl:first-child {
+	background-image: linear-gradient(var(--rtbl-soft), var(--rtbl-soft));
+}
+
+.rtbl--scroll.rtbl--head-solid .rtbl-table > thead > tr > :first-child {
+	background-color: var(--rtbl-accent);
+}
+
+.rtbl--scroll.rtbl--striped .rtbl-table > tbody > tr:nth-child(even) > :first-child {
+	background-image: linear-gradient(var(--rtbl-stripe), var(--rtbl-stripe));
+}
+
+.rtbl--scroll .rtbl-table > tbody > tr:hover > :first-child {
+	background-image: linear-gradient(var(--rtbl-hover), var(--rtbl-hover));
+}
+
+.rtbl--scroll .rtbl-table > tbody > tr.is-hl > :first-child {
+	box-shadow: inset 3px 0 0 var(--rtbl-accent), 1px 0 0 var(--rtbl-line);
+}
+
+/* Collapse mode: the tap target (shown on phones only) ---------------------- */
+
+.rtbl .rtbl-toggle,
+.rtbl .rtbl-toggle-btn {
+	display: none;
+}
+
+.rtbl--collapse .rtbl-toggle {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 1px;
+	height: 1px;
+	margin: 0;
+	opacity: 0;
+	pointer-events: none;
+}
+
+.rtbl--collapse .rtbl-toggle-btn {
+	position: absolute;
+	inset: 0;
+	z-index: 0;
+	align-items: center;
+	justify-content: flex-end;
+	margin: 0;
+	padding-inline-end: .85em;
+	color: var(--rtbl-accent);
+	cursor: pointer;
+	-webkit-tap-highlight-color: transparent;
+}
+
+.rtbl--collapse .rtbl-toggle-btn .rtbl-chev {
+	transition: transform .2s;
+}
+
+.rtbl--collapse .rtbl-toggle:checked + .rtbl-toggle-btn .rtbl-chev {
+	transform: rotate(180deg);
+}
+
+.rtbl--collapse .rtbl-toggle:focus-visible + .rtbl-toggle-btn {
+	outline: 2px solid var(--rtbl-accent);
+	outline-offset: -3px;
+	border-radius: calc(var(--rtbl-radius) - 2px);
+}
+
+/* Links and buttons in the first cell stay clickable above the tap target. */
+.rtbl--collapse .rtbl-table > tbody > tr > :first-child :is(a, button, input:not(.rtbl-toggle), select, textarea) {
+	position: relative;
+	z-index: 1;
+}
+
+/* Sorting -------------------------------------------------------------------- */
+
+.rtbl .rtbl-table .rtbl-sort,
+.rtbl .rtbl-table .rtbl-sort:hover,
+.rtbl .rtbl-table .rtbl-sort:focus {
+	display: inline-flex;
+	align-items: center;
+	gap: .4em;
+	min-height: 0;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	border-radius: 3px;
+	background: none;
+	box-shadow: none;
+	color: inherit;
+	font: inherit;
+	font-weight: inherit;
+	letter-spacing: inherit;
+	line-height: inherit;
+	text-align: inherit;
+	text-decoration: none;
+	text-transform: inherit;
+	cursor: pointer;
+}
+
+.rtbl .rtbl-table .rtbl-sort:focus-visible {
+	outline: 2px solid currentColor;
+	outline-offset: 3px;
+}
+
+.rtbl .rtbl-sort-ico {
+	display: inline-block;
+	flex: none;
+	width: .55em;
+	height: .8em;
+	background:
+		linear-gradient(to top right, transparent 50%, currentColor 50%) 0 0 / 50% 40% no-repeat,
+		linear-gradient(to top left, transparent 50%, currentColor 50%) 100% 0 / 50% 40% no-repeat,
+		linear-gradient(to bottom right, transparent 50%, currentColor 50%) 0 100% / 50% 40% no-repeat,
+		linear-gradient(to bottom left, transparent 50%, currentColor 50%) 100% 100% / 50% 40% no-repeat;
+	opacity: .35;
+}
+
+.rtbl .rtbl-table th[aria-sort="ascending"] .rtbl-sort-ico {
+	background:
+		linear-gradient(to top right, transparent 50%, currentColor 50%) 0 25% / 50% 45% no-repeat,
+		linear-gradient(to top left, transparent 50%, currentColor 50%) 100% 25% / 50% 45% no-repeat;
+	opacity: 1;
+}
+
+.rtbl .rtbl-table th[aria-sort="descending"] .rtbl-sort-ico {
+	background:
+		linear-gradient(to bottom right, transparent 50%, currentColor 50%) 0 75% / 50% 45% no-repeat,
+		linear-gradient(to bottom left, transparent 50%, currentColor 50%) 100% 75% / 50% 45% no-repeat;
+	opacity: 1;
+}
+
+/* Search and "Sort by" ------------------------------------------------------ */
+
+.rtbl .rtbl-tools {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: .6em 1em;
+	margin: 0 0 .85em;
+}
+
+.rtbl .rtbl-tools:empty {
+	display: none;
+}
+
+.rtbl .rtbl-search {
+	position: relative;
+	flex: 0 1 18em;
+	min-width: 0;
+}
+
+.rtbl .rtbl-search-icon {
+	position: absolute;
+	top: 50%;
+	inset-inline-start: .85em;
+	width: 1em;
+	height: 1em;
+	opacity: .55;
+	transform: translateY(-50%);
+	pointer-events: none;
+}
+
+.rtbl .rtbl-search .rtbl-search-input,
+.rtbl .rtbl-sortby .rtbl-sortby-select {
+	width: 100%;
+	height: auto;
+	min-height: 2.5em;
+	margin: 0;
+	padding: .5em 1em .5em 2.4em;
+	border: 1px solid var(--rtbl-line);
+	border-radius: 999px;
+	background: transparent;
+	box-shadow: none;
+	color: inherit;
+	font: inherit;
+	font-size: .95em;
+	line-height: 1.4;
+}
+
+.rtbl .rtbl-search .rtbl-search-input:focus,
+.rtbl .rtbl-sortby .rtbl-sortby-select:focus {
+	border-color: var(--rtbl-accent);
+	outline: 0;
+	box-shadow: 0 0 0 1px var(--rtbl-accent);
+}
+
+.rtbl .rtbl-sortby {
+	display: none;
+	flex: 0 1 auto;
+	align-items: center;
+	gap: .5em;
+	margin-inline-start: auto;
+	font-size: .95em;
+	white-space: nowrap;
+}
+
+.rtbl .rtbl-sortby label {
+	margin: 0;
+	font-weight: 600;
+}
+
+.rtbl .rtbl-sortby .rtbl-sortby-select {
+	width: auto;
+	max-width: 14em;
+	padding-inline: .9em 2em;
+	color: inherit;
+	background-color: var(--rtbl-surface);
+}
+
+.rtbl .rtbl-none {
+	margin: .85em 0 0;
+	padding: .85em 1em;
+	border: 1px dashed var(--rtbl-line);
+	border-radius: var(--rtbl-radius);
+	text-align: center;
+	opacity: .8;
+}
+
+.rtbl .rtbl-note {
+	margin: .7em 0 0;
+	font-size: .875em;
+	opacity: .8;
+}
+
+/* Pages ---------------------------------------------------------------------- */
+
+@media (scripting: enabled) {
+	.rtbl .rtbl-table > tbody > tr.rtbl-later {
+		display: none;
+	}
+}
+
+@media (scripting: none) {
+	.rtbl .rtbl-pages {
+		display: none;
+	}
+}
+
+.rtbl .rtbl-table > tbody > tr[hidden] {
+	display: none !important;
+}
+
+.rtbl .rtbl-pages {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: .6em 1em;
+	margin: .85em 0 0;
+	font-size: .9em;
+}
+
+.rtbl .rtbl-pages[hidden] {
+	display: none;
+}
+
+.rtbl .rtbl-pages-info {
+	opacity: .8;
+	font-variant-numeric: tabular-nums;
+}
+
+.rtbl .rtbl-pages-btns {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: .3em;
+}
+
+.rtbl .rtbl-pages .rtbl-page,
+.rtbl .rtbl-pages .rtbl-page:hover,
+.rtbl .rtbl-pages .rtbl-page:focus {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 2.35em;
+	height: 2.35em;
+	min-height: 0;
+	margin: 0;
+	padding: 0 .55em;
+	border: 1px solid var(--rtbl-line);
+	border-radius: 8px;
+	background: transparent;
+	box-shadow: none;
+	color: inherit;
+	font: inherit;
+	font-variant-numeric: tabular-nums;
+	font-weight: 600;
+	line-height: 1;
+	text-transform: none;
+	cursor: pointer;
+}
+
+.rtbl .rtbl-pages .rtbl-page:hover {
+	border-color: var(--rtbl-accent);
+}
+
+.rtbl .rtbl-pages .rtbl-page:focus-visible {
+	outline: 2px solid var(--rtbl-accent);
+	outline-offset: 1px;
+}
+
+.rtbl .rtbl-pages .rtbl-page.is-current {
+	border-color: var(--rtbl-accent);
+	background: var(--rtbl-accent);
+	color: var(--rtbl-on-accent);
+}
+
+.rtbl .rtbl-pages .rtbl-page[disabled] {
+	opacity: .4;
+	cursor: default;
+}
+
+.rtbl .rtbl-pages .rtbl-page-gap {
+	padding: 0 .2em;
+	opacity: .6;
+}
+
+/* Print: the full table, no controls. */
+@media print {
+	.rtbl .rtbl-tools,
+	.rtbl .rtbl-pages {
+		display: none !important;
+	}
+
+	.rtbl .rtbl-table > tbody > tr.rtbl-later,
+	.rtbl .rtbl-table > tbody > tr[hidden] {
+		display: table-row !important;
+	}
+}
